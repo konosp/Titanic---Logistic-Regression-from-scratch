@@ -15,8 +15,8 @@ library(readr) # CSV file I/O, e.g. the read_csv function
 
 system("ls ../input")
 
-test_data <- read_csv("../input/test.csv")
-train_data <- read_csv("../input/train.csv")
+test_data <- read_csv("test.csv")
+train_data <- read_csv("train.csv")
 
 library(ggplot2)
 library(dplyr)
@@ -25,6 +25,37 @@ library(readr)
 
 # Any results you write to the current directory are saved as output.
 ```
+
+    Parsed with column specification:
+    cols(
+      PassengerId = col_integer(),
+      Pclass = col_integer(),
+      Name = col_character(),
+      Sex = col_character(),
+      Age = col_double(),
+      SibSp = col_integer(),
+      Parch = col_integer(),
+      Ticket = col_character(),
+      Fare = col_double(),
+      Cabin = col_character(),
+      Embarked = col_character()
+    )
+    Parsed with column specification:
+    cols(
+      PassengerId = col_integer(),
+      Survived = col_integer(),
+      Pclass = col_integer(),
+      Name = col_character(),
+      Sex = col_character(),
+      Age = col_double(),
+      SibSp = col_integer(),
+      Parch = col_integer(),
+      Ticket = col_character(),
+      Fare = col_double(),
+      Cabin = col_character(),
+      Embarked = col_character()
+    )
+
 
 
 ```R
@@ -115,6 +146,12 @@ From reviewing the initial train data, we identify that the embarked port is mis
 table(is.na(train_data$Embarked))
 ```
 
+
+    
+    FALSE  TRUE 
+      889     2 
+
+
 In order to fill those values, we will use the fare payed by passengers for the different ports (this idea originates from a different kernel but it is very easy to use to fill in the missing values).
 
 
@@ -128,6 +165,12 @@ p1 + aes(x = Embarked, y = Fare, color = as.factor(Pclass)) +
   geom_hline(yintercept = median(train_data[is.na(train_data$Embarked),]$Fare), 
              linetype = 'dashed', color = 'blue')  + theme(legend.position="bottom")
 ```
+
+
+
+
+![png](output_8_1.png)
+
 
 It looks like the media fare value for the passengers without a port is matching port C. Let's fill the missing values.
 
@@ -147,6 +190,10 @@ test_data <- format.tables(test_data)
 train_data <- format.tables(train_data)
 ```
 
+    Warning message:
+    “Too many values at 269 locations: 2, 3, 5, 6, 8, 9, 10, 12, 13, 15, 16, 19, 20, 22, 23, 24, 25, 26, 27, 29, ...”Warning message:
+    “Too many values at 576 locations: 1, 2, 4, 5, 7, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 21, 23, 24, 25, 26, ...”
+
 
 ```R
 coloumns.to.fit <- c('Pclass2','Pclass3','Sex.int',
@@ -156,6 +203,25 @@ coloumns.to.fit <- c('Pclass2','Pclass3','Sex.int',
 
 head(train_data[,coloumns.to.fit],10)
 ```
+
+
+<table>
+<thead><tr><th scope=col>Pclass2</th><th scope=col>Pclass3</th><th scope=col>Sex.int</th><th scope=col>SibSp</th><th scope=col>Parch</th><th scope=col>has_cabin</th><th scope=col>age_missing</th><th scope=col>EmbarkedQ</th><th scope=col>EmbarkedS</th><th scope=col>titleMiss</th><th scope=col>titleMr</th><th scope=col>titleMrs</th><th scope=col>titleOther</th></tr></thead>
+<tbody>
+	<tr><td>0</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+	<tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+	<tr><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+	<tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+	<tr><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+	<tr><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+	<tr><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+	<tr><td>0</td><td>1</td><td>1</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+	<tr><td>0</td><td>1</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+	<tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+</tbody>
+</table>
+
+
 
 * Initialize the parameters (theta.initial) so the algorithm can start fitting the values
 
@@ -229,6 +295,11 @@ for(i in seq(from=0.01, to=1, by=0.005)){
 print(theta.optimized)
 ```
 
+     [1]  0.06295784 -0.76250913  1.82062871 -0.28509531 -0.26396409  1.38122839
+     [7] -0.17340021 -0.34270297 -0.55458968  1.82742543 -2.94846951  2.17018348
+    [13] -2.42796863
+
+
 * Comparison of actual versus predicted survival
 
 
@@ -243,6 +314,12 @@ results.table <- table(y_predict, train_data$Survived,dnn = c('Predicted','Actua
 print(results.table)
 ```
 
+             Actual
+    Predicted   0   1
+            0 479  83
+            1  70 259
+
+
 * Optimized classification threshold based on the F1-score (https://en.wikipedia.org/wiki/F1_score)
 
 
@@ -252,6 +329,9 @@ recal <- results.table[2,2] / (results.table[2,2] + results.table[1,2])
 F1 <- 2 * precision * recal / (precision + recal)   
 print(paste('Threshold calculated: ', threshold, ' - ', 'F1-score: ', F1))
 ```
+
+    [1] "Threshold calculated:  0.485  -  F1-score:  0.771982116244411"
+
 
 **Time for some easy-to-digest algorithm performance depiction.** 
 
@@ -282,6 +362,12 @@ p1 + aes(x = sigmoid, fill = `Actual Outcome`) + geom_histogram(bins = 75) +
   xlab('Predicted probability of survival - Result of sigmoid function') +
   ylab('Number of passengers') + theme(legend.position="bottom")
 ```
+
+
+
+
+![png](output_29_1.png)
+
 
 It looks like the basic implementation of the logistic regression algorithm has delivered quite decent results without any complicated feature engineering and without fully utilizing variables like age, fare and ticket. Those are points for further investigation. However, even with this implementation, it achieves 0.77990 accuracy; not bad for a start.
 
